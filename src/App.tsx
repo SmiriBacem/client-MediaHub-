@@ -5,26 +5,17 @@ import {
   BrowserRouter,
   Route,
   Routes,
-  useLocation,
-  useNavigate,
 } from "react-router-dom";
 import { useAtom } from "jotai";
 import { isAuthenticatedUserAtom } from "./state/authAtom";
 import Dashboard from "./page/dashboard";
 import "./app.style.css"
+import {MovieDetails} from "./page/movie/subComponent/movieDetails";
 
 function App() {
   // Lire depuis l'état si l'utilisateur est connecté
   const [isAuthenticated] = useAtom(isAuthenticatedUserAtom);
-  // const navigate = useNavigate();
-  // const location = useLocation();
 
-  // // vérifier à chaque fois si l'utilisateur est connecter ou pas
-  // React.useEffect(() => {
-  //   if (!isAuthenticated && location.pathname !== "/signin") {
-  //     navigate("/signin");
-  //   }
-  // }, [isAuthenticated, location.pathname, navigate]);
 
   return (
     <div className="App bgApp">
@@ -33,9 +24,12 @@ function App() {
           <Routes>
             <Route path="/signin" element={<SigninPage />} />
             <Route path="/signup" element={<SignupPage />} />
+            
             {isAuthenticated ? (
               <>
                 <Route path="/" element={<Dashboard />} />
+                <Route path="/details" element={<MovieDetails />} />
+                <Route path="/movies/:id" element={<MovieDetails />} />
               </>
             ) : (
               <Route path="*" Component={SignupPage} />

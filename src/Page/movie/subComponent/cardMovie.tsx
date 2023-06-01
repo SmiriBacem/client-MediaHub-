@@ -1,13 +1,19 @@
 import React from "react";
 import { IMovie } from "../../../helper/interfaces/movieInterface";
+import { useNavigate } from "react-router-dom";
 
 interface MovieCardProps {
   movie: IMovie;
 }
 
 const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
+  const navigate = useNavigate();
+
   return (
-    <div className="place-items-center font-mono mt-8">
+    <div
+      className="place-items-center font-mono mt-8 hover:pointer"
+      onClick={() => navigate(`/movies/${movie?._id}`)}
+    >
       <div className="bg-white rounded-md  shadow-lg">
         <div className="md:flex px-4 leading-none max-w-4xl">
           <div className="flex-none ">
@@ -18,15 +24,20 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
             />
           </div>
           <div className="flex-col text-black">
-            <p className="pt-4 text-2xl font-bold">{movie.Title} ({movie["Release Date"]})</p>
+            <p className="pt-4 text-2xl font-bold">
+              {movie.Title} ({movie["Release Date"]})
+            </p>
             <div className="text-md flex justify-between px-4 my-2">
               <span className="font-bold">
-                {movie.Director || "Pas de directeur trouvé"} | { movie["Major Genre"] }
+                {movie.Director || "Pas de directeur trouvé"} |
+                {movie["Major Genre"]}
               </span>
               <span className="font-bold"></span>
             </div>
             <p className="hidden md:block px-4 my-4 text-sm text-left">
-              Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
+              Lorem Ipsum is simply dummy text of the printing and typesetting
+              industry. Lorem Ipsum has been the industry's standard dummy text
+              ever since the 1500s,
             </p>
 
             <p className="flex text-md px-4 my-2">

@@ -12,6 +12,7 @@ export interface IMovie {
     "Major Genre"?: string;
     Director?: string;
     "Rotten Tomatoes Rating"?: string;
+    _id?:string;
   }
 
 export interface IMovieTri {

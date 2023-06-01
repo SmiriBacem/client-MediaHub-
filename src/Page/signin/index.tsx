@@ -49,7 +49,7 @@ const SigninForm: React.FC = () => {
         navigate("/");
       } catch (error: any) {
         console.log('error',error)
-        // connexion n'as pas réussie
+        // connexion n'a pas réussie
         // si connexion est échoué ou un probléme une alerte se présente en haut et droite de la page
         makeToast("warning", error?.request?.status === 429 ? "Vous avez dépasser la limite du nombre de requêtes à une seule requête par seconde"  : error.response.data.message);
       }

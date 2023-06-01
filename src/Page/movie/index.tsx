@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useQuery, useQueryClient } from "react-query";
-import axios from "axios";
 import MovieCard from "./subComponent/cardMovie";
 import { IMovie } from "../../helper/interfaces/movieInterface";
-import { movie_list_api } from "../../api";
 import Fuse from "fuse.js";
 import TriMovie from "./subComponent/triFilm";
 import { fetchMovies, fetchMoviesSortedByField } from "../../api/movie";
 import makeToast from "../../components/Snackbar";
 
 const MovieList = () => {
+  // c'est le texte de la recherche dans l'input
   const [searchValue, setSearchValue] = useState<string>("");
+  // c'est le checkbox choisi
   const [selectedTriVal, setSelectedTriVal] = useState<string>("");
+  // Liste des films par défaut
   const [movies, setMovies] = useState<IMovie[]>([]);
+  // la liste des films quand vous sélectionnez un checkbox
   const [movieTri, setMoviesTri] = useState<IMovie[]>([]);
 
   // Appel au serveur node les films disponible
@@ -20,7 +21,14 @@ const MovieList = () => {
     try {
       const data: any = await fetchMovies();
       setMovies(data);
-    } catch (error) {}
+    } catch (error: any) {
+      makeToast(
+        "warning",
+        error?.request?.status === 429
+          ? "Vous avez dépasser la limite du nombre de requêtes à une seule requête par seconde"
+          : error.response.data.message
+      );
+    }
   };
 
   // Appel au serveuc node le tri du film avec le spécifique Field
@@ -28,9 +36,28 @@ const MovieList = () => {
     try {
       const data = await fetchMoviesSortedByField(selectedTriVal);
       setMoviesTri(data);
-    } catch (error : any) {
-        makeToast("warning", error?.request?.status === 429 ? "Vous avez dépasser la limite du nombre de requêtes à une seule requête par seconde"  : error.response.data.message);
+    } catch (error: any) {
+      makeToast(
+        "warning",
+        error?.request?.status === 429
+          ? "Vous avez dépasser la limite du nombre de requêtes à une seule requête par seconde"
+          : error.response.data.message
+      );
+    }
+  };
 
+  // Appel au serveuc node le tri du film avec le spécifique Field
+  const fetchMovieByTitleAndField = async () => {
+    try {
+      const data = await fetchMoviesSortedByField(selectedTriVal);
+      setMoviesTri(data);
+    } catch (error: any) {
+      makeToast(
+        "warning",
+        error?.request?.status === 429
+          ? "Vous avez dépasser la limite du nombre de requêtes à une seule requête par seconde"
+          : error.response.data.message
+      );
     }
   };
 
@@ -41,8 +68,11 @@ const MovieList = () => {
   }, [movies]);
 
   useEffect(() => {
-    fetchMoviesTri();
+    if(selectedTriVal != ""){
+        fetchMoviesTri();
+    }
   }, [selectedTriVal]);
+
 
   // Lorsque vous chercher le nom du film vous chercherche ceci est le trigger du EVENT quand le user écris
   const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
