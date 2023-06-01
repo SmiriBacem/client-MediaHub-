@@ -1,8 +1,11 @@
 import React from 'react'
+import MovieList from '../movie'
 
 function Dashboard() {
   return (
-    <div>index</div>
+    <div className='h-screen'>
+        <MovieList />
+    </div>
   )
 }
 

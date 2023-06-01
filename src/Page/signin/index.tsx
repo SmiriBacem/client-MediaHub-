@@ -6,6 +6,9 @@ import makeToast from "../../components/Snackbar";
 import { signin_user_api } from "../../api";
 import { Link } from "react-router-dom";
 import { validationSchema } from "./signinSchemaYup";
+import { useNavigate } from "react-router-dom";
+import { useAtom } from "jotai";
+import { isAuthenticatedUserAtom } from "../../state/authAtom";
 
 interface ISigninFormData {
   email: string;
@@ -14,6 +17,8 @@ interface ISigninFormData {
 
 const SigninForm: React.FC = () => {
   const queryClient = useQueryClient();
+  const [, setIsAuthenticatedUserAtom] = useAtom(isAuthenticatedUserAtom);
+  const navigate = useNavigate();
 
   // Appel de l'Api signin
   const signinMutation = useMutation((formData: ISigninFormData) =>
@@ -32,11 +37,16 @@ const SigninForm: React.FC = () => {
         if (signin?.data?.token) {
           // Une  alerte se présente en haut et droite de la page
           makeToast("success", "Vous êtes dés maintenant connecter");
+          //enregistrer la token dans le navigateur 
+          window.localStorage.setItem("MediaHub-Token", signin?.data?.token);
+          // Mise à jour de l'état global ( STATE ) True = Connected
+          setIsAuthenticatedUserAtom(true)
         }
         // faire un purge au formulaire
         formik.resetForm();
         queryClient.invalidateQueries("user");
         // connexion réussie
+        navigate("/");
       } catch (error: any) {
         console.log('error',error)
         // connexion n'as pas réussie
