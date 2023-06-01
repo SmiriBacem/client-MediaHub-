@@ -5,8 +5,12 @@ import Fuse from "fuse.js";
 import TriMovie from "./subComponent/triFilm";
 import { fetchMovies, fetchMoviesSortedByField } from "../../api/movie";
 import makeToast from "../../components/Snackbar";
+import { useNavigate } from "react-router-dom";
+import { userAtom } from "../../state/userAtom";
+import { useAtom } from "jotai";
 
 const MovieList = () => {
+    const navigate = useNavigate();
   // c'est le texte de la recherche dans l'input
   const [searchValue, setSearchValue] = useState<string>("");
   // c'est le checkbox choisi
@@ -15,6 +19,8 @@ const MovieList = () => {
   const [movies, setMovies] = useState<IMovie[]>([]);
   // la liste des films quand vous sélectionnez un checkbox
   const [movieTri, setMoviesTri] = useState<IMovie[]>([]);
+    // Récupérer les données de l'utilisateur du State
+  const [ userAtomData] = useAtom(userAtom);
 
   // Appel au serveur node les films disponible
   const fetchMoviesFunc = async () => {
@@ -95,6 +101,10 @@ const MovieList = () => {
   return (
     <div className="">
       <div className="flex gap-x-4 ml-8 pt-4">
+      <div className="bg-teal-100 rounded cursor-pointer"
+      onClick={()=> navigate(`/historique/${userAtomData?._id}`)}>
+            <p className="mr-4 ml-4 ">Visualisez vos historiques</p>
+        </div>
         <div>
           <input
             type="email"
@@ -102,7 +112,7 @@ const MovieList = () => {
             name="email"
             onChange={onSearch}
             value={searchValue}
-            className={`form-input w-full border-gray-400 rounded-lg w-64`}
+            className={`form-input border-gray-400 rounded-lg w-64`}
             placeholder="Chercher votre film par nom"
           />
         </div>

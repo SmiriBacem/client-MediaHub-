@@ -39,8 +39,9 @@ export const fetchMoviesSortedByFieldAndSearch = async (field: string) => {
   return response.data;
 };
 
-export const fetchMovieById = async (id: string): Promise<IMovie> => {
-  const response = await axios.get(`${movie_list_api}/${id}`,{
+
+export const fetchMovieById = async (id: string, isUserAtom : string ): Promise<IMovie> => {
+  const response = await axios.get(`${movie_list_api}/${id}/${isUserAtom}`,{
     headers: {
       Authorization: `Bearer ${window.localStorage.getItem("MediaHub-Token")}`,
     },

@@ -11,6 +11,7 @@ import { isAuthenticatedUserAtom } from "./state/authAtom";
 import Dashboard from "./page/dashboard";
 import "./app.style.css"
 import {MovieDetails} from "./page/movie/subComponent/movieDetails";
+import Historique from "./page/historique";
 
 function App() {
   // Lire depuis l'état si l'utilisateur est connecté
@@ -30,6 +31,7 @@ function App() {
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/details" element={<MovieDetails />} />
                 <Route path="/movies/:id" element={<MovieDetails />} />
+                <Route path="/historique/:userId" element={<Historique />} />
               </>
             ) : (
               <Route path="*" Component={SignupPage} />

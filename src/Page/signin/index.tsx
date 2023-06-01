@@ -9,6 +9,7 @@ import { validationSchema } from "./signinSchemaYup";
 import { useNavigate } from "react-router-dom";
 import { useAtom } from "jotai";
 import { isAuthenticatedUserAtom } from "../../state/authAtom";
+import { userAtom } from "../../state/userAtom";
 
 interface ISigninFormData {
   email: string;
@@ -18,6 +19,8 @@ interface ISigninFormData {
 const SigninForm: React.FC = () => {
   const queryClient = useQueryClient();
   const [, setIsAuthenticatedUserAtom] = useAtom(isAuthenticatedUserAtom);
+  const [, setIsUserAtom] = useAtom(userAtom);
+
   const navigate = useNavigate();
 
   // Appel de l'Api signin
@@ -42,6 +45,8 @@ const SigninForm: React.FC = () => {
           // Mise à jour de l'état global ( STATE ) True = Connected
           setIsAuthenticatedUserAtom(true)
         }
+        // Mise à jour l'atom ( State Global ) pour l'utilisateur connecter
+        setIsUserAtom(signin?.data?.user)
         // faire un purge au formulaire
         formik.resetForm();
         queryClient.invalidateQueries("user");
@@ -51,7 +56,7 @@ const SigninForm: React.FC = () => {
         console.log('error',error)
         // connexion n'a pas réussie
         // si connexion est échoué ou un probléme une alerte se présente en haut et droite de la page
-        makeToast("warning", error?.request?.status === 429 ? "Vous avez dépasser la limite du nombre de requêtes à une seule requête par seconde"  : error.response.data.message);
+        makeToast("warning", error?.request?.status === 429 ? "Vous avez dépasser la limite du nombre des requêtes à une seule requête par seconde"  : error.response.data.message);
       }
     },
   });
