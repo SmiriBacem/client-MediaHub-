@@ -5,6 +5,7 @@ import reportWebVitals from "./reportWebVitals";
 import { QueryClient, QueryClientProvider } from "react-query";
 import App from "./App";
 import 'tailwindcss/tailwind.css';
+import { Provider } from "jotai";
 
 const queryClient = new QueryClient();
 
@@ -13,7 +14,9 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <QueryClientProvider client={queryClient}>
-    <App />
+    <Provider>
+      <App />
+    </Provider>
   </QueryClientProvider>
 );
 
