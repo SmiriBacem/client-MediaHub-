@@ -10,7 +10,7 @@ const TriMovie: React.FC<IMovieTri> = ({
   //Je veux pouvoir trier les résultats par titre, ou par la note Rotten Tomatoes, la note IMDB, ou le nombre de votes sur IMDB.
   return (
     <div
-      className="flex justify-center content-center"
+      className="flex justify-center content-center gap-x-4"
     >
       {TriMovieByField.map((e) => {
         return (

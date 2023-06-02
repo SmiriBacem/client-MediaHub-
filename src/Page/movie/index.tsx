@@ -8,6 +8,7 @@ import makeToast from "../../components/Snackbar";
 import { useNavigate } from "react-router-dom";
 import { userAtom } from "../../state/userAtom";
 import { useAtom } from "jotai";
+import Disconnect from "../../components/Disconnect";
 
 const MovieList = () => {
     const navigate = useNavigate();
@@ -120,6 +121,7 @@ const MovieList = () => {
           selectedTriVal={selectedTriVal}
           setSelectedTriVal={setSelectedTriVal}
         />
+        <Disconnect />
       </div>
       <div className="movie-list pr-8 pl-8">
         {displayedMovies.length === 0 ? (
