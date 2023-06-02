@@ -10,6 +10,7 @@ function Disconnect() {
   const [, setIsUserAtom] = useAtom(userAtom);
 
   const disconnectFn = ()=>{
+    localStorage.removeItem("MediaHub-Token");
     setIsAuthenticatedUserAtom(false)
     setIsUserAtom(null)
     navigate(`/signin`)

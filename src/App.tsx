@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import SignupPage from "./page/signup";
 import SigninPage from "./page/signin";
 import {
-  BrowserRouter,
   Route,
   Routes,
 } from "react-router-dom";
@@ -12,15 +11,22 @@ import Dashboard from "./page/dashboard";
 import "./app.style.css"
 import {MovieDetails} from "./page/movie/subComponent/movieDetails";
 import Historique from "./page/historique";
+import { useNavigate } from "react-router-dom";
 
 function App() {
   // Lire depuis l'état si l'utilisateur est connecté
   const [isAuthenticated] = useAtom(isAuthenticatedUserAtom);
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem('MediaHub-Token');
+    if (!token) {
+      navigate('/');
+    }
+  }, []);
 
   return (
     <div className="App bgApp">
-      <BrowserRouter>
         <div>
           <Routes>
             <Route path="/signin" element={<SigninPage />} />
@@ -38,7 +44,6 @@ function App() {
             )}
           </Routes>
         </div>
-      </BrowserRouter>
     </div>
   );
 }

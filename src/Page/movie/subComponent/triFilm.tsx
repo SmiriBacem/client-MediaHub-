@@ -12,13 +12,13 @@ const TriMovie: React.FC<IMovieTri> = ({
     <div
       className="flex justify-center content-center gap-x-4"
     >
-      {TriMovieByField.map((e) => {
+      {TriMovieByField.map((e,index) => {
         return (
-          <div className="flex items-center">
+          <div className="flex items-center" key={index }>
             <input
-              id="default-checkbox"
+              id={`${e.value}-checkbox`}
               type="checkbox"
-              onClick={() =>
+              onChange={() =>
                 selectedTriVal === e.value
                   ? setSelectedTriVal("")
                   : setSelectedTriVal(e.value)
@@ -28,7 +28,7 @@ const TriMovie: React.FC<IMovieTri> = ({
               checked={selectedTriVal === e.value}
             />
             <label
-              htmlFor="default-checkbox"
+              htmlFor={`${e.value}-checkbox`}
               className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
             >
               {e.key}
