@@ -23,7 +23,7 @@ function App() {
     if (!token) {
       navigate('/');
     }
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="App bgApp">

@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, KeyboardEvent } from "react";
 import MovieCard from "./subComponent/cardMovie";
 import { IMovie } from "../../helper/interfaces/movieInterface";
 import Fuse from "fuse.js";
 import TriMovie from "./subComponent/triFilm";
-import { fetchMovies, fetchMoviesSortedByField } from "../../api/movie";
+import {
+  fetchMovies,
+  fetchMoviesSortedByField,
+  fetchMoviesSortedByFieldAndSearch,
+} from "../../api/movie";
 import makeToast from "../../components/Snackbar";
 import { useNavigate } from "react-router-dom";
 import { userAtom } from "../../state/userAtom";
@@ -11,7 +15,7 @@ import { useAtom } from "jotai";
 import Disconnect from "../../components/Disconnect";
 
 const MovieList = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   // c'est le texte de la recherche dans l'input
   const [searchValue, setSearchValue] = useState<string>("");
   // c'est le checkbox choisi
@@ -20,71 +24,75 @@ const MovieList = () => {
   const [movies, setMovies] = useState<IMovie[]>([]);
   // la liste des films quand vous sélectionnez un checkbox
   const [movieTri, setMoviesTri] = useState<IMovie[]>([]);
-    // Récupérer les données de l'utilisateur du State
-  const [ userAtomData] = useAtom(userAtom);
-
-  // Appel au serveur node les films disponible
-  const fetchMoviesFunc = async () => {
-    try {
-      const data: any = await fetchMovies();
-      setMovies(data);
-    } catch (error: any) {
-      makeToast(
-        "warning",
-        error?.request?.status === 429
-          ? "Vous avez dépasser la limite du nombre de requêtes à une seule requête par seconde"
-          : error.response.data.message
-      );
-    }
-  };
-
-  // Appel au serveuc node le tri du film avec le spécifique Field
-  const fetchMoviesTri = async () => {
-    try {
-      const data = await fetchMoviesSortedByField(selectedTriVal);
-      setMoviesTri(data);
-    } catch (error: any) {
-      makeToast(
-        "warning",
-        error?.request?.status === 429
-          ? "Vous avez dépasser la limite du nombre de requêtes à une seule requête par seconde"
-          : error.response.data.message
-      );
-    }
-  };
-
-  // Appel au serveuc node le tri du film avec le spécifique Field
-  const fetchMovieByTitleAndField = async () => {
-    try {
-      const data = await fetchMoviesSortedByField(selectedTriVal);
-      setMoviesTri(data);
-    } catch (error: any) {
-      makeToast(
-        "warning",
-        error?.request?.status === 429
-          ? "Vous avez dépasser la limite du nombre de requêtes à une seule requête par seconde"
-          : error.response.data.message
-      );
-    }
-  };
+  // Récupérer les données de l'utilisateur du State
+  const [userAtomData] = useAtom(userAtom);
 
   useEffect(() => {
+    // Appel au serveuc node le tri du film avec le spécifique Field
+    const fetchMoviesTri = async () => {
+      try {
+        const data = await fetchMoviesSortedByField(selectedTriVal);
+        setMoviesTri(data);
+      } catch (error: any) {
+        makeToast(
+          "warning",
+          error?.request?.status === 429
+            ? "Vous avez dépasser la limite du nombre de requêtes à une seule requête par seconde"
+            : error.response.data.message
+        );
+      }
+    };
+
+    // Appel au serveuc node le tri du film avec le spécifique Field
+    const fetchMovieByTitleAndField = async () => {
+      try {
+        const data = await fetchMoviesSortedByFieldAndSearch(
+          searchValue,
+          selectedTriVal
+        );
+        setMoviesTri(data);
+      } catch (error: any) {
+        makeToast(
+          "warning",
+          error?.request?.status === 429
+            ? "Vous avez dépasser la limite du nombre de requêtes à une seule requête par seconde"
+            : error.response.data.message
+        );
+      }
+    };
+
+    if (selectedTriVal !== "" && searchValue.length === 0) {
+      fetchMoviesTri();
+    } else if (selectedTriVal !== "" && searchValue !== "") {
+      fetchMovieByTitleAndField();
+    }
+  }, [selectedTriVal, searchValue, movies]);
+
+  useEffect(() => {
+    // Appel au serveur node les films disponible
+    const fetchMoviesFunc = async () => {
+      try {
+        const data: any = await fetchMovies();
+        setMovies(data);
+      } catch (error: any) {
+        makeToast(
+          "warning",
+          error?.request?.status === 429
+            ? "Vous avez dépasser la limite du nombre de requêtes à une seule requête par seconde"
+            : error.response.data.message
+        );
+      }
+    };
     if (movies.length === 0) {
       fetchMoviesFunc();
     }
   }, [movies]);
 
-  useEffect(() => {
-    if(selectedTriVal != ""){
-        fetchMoviesTri();
-    }
-  }, [selectedTriVal]);
-
-
   // Lorsque vous chercher le nom du film vous chercherche ceci est le trigger du EVENT quand le user écris
-  const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchValue(value);
+  const onSearch = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      setSearchValue(searchValue);
+    }
   };
 
   // Nouvelle instance Fuse pour la recherche du titre spécifique
@@ -93,25 +101,30 @@ const MovieList = () => {
     keys: ["Title"],
   });
 
-  const displayedMovies = selectedTriVal
-    ? movieTri
-    : searchValue
-    ? fuse.search(searchValue).map((item) => item.item as IMovie)
-    : movies;
+  const displayedMovies =
+    (selectedTriVal.length === 0 && searchValue.length === 0) ||
+    (selectedTriVal.length !== 0 && searchValue.length === 0)
+      ? movieTri
+      : searchValue
+      ? fuse.search(searchValue).map((item) => item.item as IMovie)
+      : movies;
 
   return (
     <div className="">
       <div className="flex gap-x-4 ml-8 pt-4">
-      <div className="bg-teal-100 rounded cursor-pointer"
-      onClick={()=> navigate(`/historique/${userAtomData?._id}`)}>
-            <p className="mr-4 ml-4 ">Visualisez vos historiques</p>
+        <div
+          className="bg-teal-100 rounded cursor-pointer"
+          onClick={() => navigate(`/historique/${userAtomData?._id}`)}
+        >
+          <p className="mr-4 ml-4 ">Visualisez vos historiques</p>
         </div>
         <div>
           <input
             type="email"
             id="email"
             name="email"
-            onChange={onSearch}
+            onKeyDown={onSearch}
+            onChange={(e) => setSearchValue(e.target.value)}
             value={searchValue}
             className={`form-input border-gray-400 rounded-lg w-64`}
             placeholder="Chercher votre film par nom"

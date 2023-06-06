@@ -25,9 +25,9 @@ export const fetchMoviesSortedByField = async (field: string) => {
   return response.data;
 };
 
-export const fetchMoviesSortedByFieldAndSearch = async (field: string) => {
+export const fetchMoviesSortedByFieldAndSearch = async (field: string,sortby : string) => {
   const response = await axios.get(
-    `${movie_list_api}/searchAndSortMovies?query=${field}&sortBy=${field}`,
+    `${movie_list_api}/searchAndSortMovies?query=${field}&sortBy=${sortby}`,
     {
       headers: {
         Authorization: `Bearer ${window.localStorage.getItem(
