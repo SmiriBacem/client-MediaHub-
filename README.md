@@ -26,3 +26,7 @@ Accédez à l'application dans votre navigateur :
 
 
 Ouvrez votre navigateur et allez à l'adresse : http://localhost:3000
+
+//si j'ai eu assez du temps : 
+- unit test ( Jest )
+- Axios intercepter ( Verifier si l'utilisateur est connecter ou pas )
