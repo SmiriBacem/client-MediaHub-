@@ -1,4 +1,4 @@
-import React, { useEffect, useState, KeyboardEvent } from "react";
+import React, { useEffect, useState } from "react";
 import MovieCard from "./subComponent/cardMovie";
 import { IMovie } from "../../helper/interfaces/movieInterface";
 import Fuse from "fuse.js";
@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { userAtom } from "../../state/userAtom";
 import { useAtom } from "jotai";
 import Disconnect from "../../components/Disconnect";
+import MovieSearchInput from "./MovieSearchInput";
 
 const MovieList = () => {
   const navigate = useNavigate();
@@ -89,11 +90,7 @@ const MovieList = () => {
   }, [movies]);
 
   // Lorsque vous chercher le nom du film vous chercherche ceci est le trigger du EVENT quand le user écris
-  const onSearch = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      setSearchValue(searchValue);
-    }
-  };
+  const onSearch = () => setSearchValue(searchValue);
 
   // Nouvelle instance Fuse pour la recherche du titre spécifique
   const fuse = new Fuse(movies as any, {
@@ -102,11 +99,12 @@ const MovieList = () => {
   });
 
   const displayedMovies =
-    (selectedTriVal.length === 0 && searchValue.length === 0) ||
-    (selectedTriVal.length !== 0 && searchValue.length === 0)
-      ? movieTri
-      : searchValue
+    selectedTriVal.length === 0 && searchValue.length !== 0
       ? fuse.search(searchValue).map((item) => item.item as IMovie)
+      : selectedTriVal.length !== 0 && searchValue.length === 0
+      ? movieTri
+      : selectedTriVal.length !== 0 && searchValue.length !== 0
+      ? movieTri
       : movies;
 
   return (
@@ -118,18 +116,11 @@ const MovieList = () => {
         >
           <p className="mr-4 ml-4 ">Visualisez vos historiques</p>
         </div>
-        <div>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            onKeyDown={onSearch}
-            onChange={(e) => setSearchValue(e.target.value)}
-            value={searchValue}
-            className={`form-input border-gray-400 rounded-lg w-64`}
-            placeholder="Chercher votre film par nom"
-          />
-        </div>
+        <MovieSearchInput
+          value={searchValue}
+          onChange={setSearchValue}
+          onSearch={onSearch}
+        />
         <TriMovie
           selectedTriVal={selectedTriVal}
           setSelectedTriVal={setSelectedTriVal}
