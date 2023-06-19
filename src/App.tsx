@@ -8,6 +8,7 @@ import Dashboard from "./page/dashboard";
 import "./app.style.css";
 import { MovieDetails } from "./page/movie/subComponent/movieDetails";
 import Historique from "./page/historique";
+import Error from "./page/error";
 
 function App() {
   const [isAuthenticated] = useAtom(isAuthenticatedUserAtom);
@@ -16,19 +17,19 @@ function App() {
     <div className="App bgApp">
       <div>
         <Routes>
-          <Route path="/signin" element={<SigninPage />} />
+          <Route path="/" element={<SigninPage />} />
           <Route path="/signup" element={<SignupPage />} />
-
+          <Route path="*" element={<Error />} />
           {isAuthenticated ? (
             <>
-              <Route path="/" element={<Dashboard />} />
+              <Route path="/home" element={<Dashboard />} />
               <Route path="/details" element={<MovieDetails />} />
               <Route path="/movies/:id" element={<MovieDetails />} />
               <Route path="/historique/:userId" element={<Historique />} />
             </>
           ) : (
             <>
-              <Route path="/signin" element={<SigninPage />} />
+              <Route path="/" element={<SigninPage />} />
               <Route path="/signup" element={<SignupPage />} />
             </>
           )}

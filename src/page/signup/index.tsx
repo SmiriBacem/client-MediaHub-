@@ -43,7 +43,7 @@ const SignupForm: React.FC = () => {
         <form onSubmit={formik.handleSubmit} className="w-full">
           <div className="mb-8">
             <label
-              htmlFor="username"
+              htmlFor="name"
               className="block text-gray-700 text-sm font-bold mb-2"
             >
               Nom & Prénom
@@ -118,7 +118,7 @@ const SignupForm: React.FC = () => {
             </button>
           </div>
           <div className="w-full flex justify-center mt-8">
-            <div><p className="text-gray-500	font-medium text-xs"><Link to="/signin">Connectez vous !</Link></p></div>
+            <div><p className="text-gray-500	font-medium text-xs"><Link to="/">Connectez vous !</Link></p></div>
           </div>
         </form>
       </div>

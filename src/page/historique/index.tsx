@@ -31,7 +31,7 @@ function Historique() {
             src="https://e7.pngegg.com/pngimages/898/941/png-clipart-arrow-blog-arrow-angle-presentation.png"
             alt="pic"
             className="h-12"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/home")}
           />
         </div>
       </div>

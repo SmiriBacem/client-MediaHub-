@@ -13,7 +13,7 @@ function Disconnect() {
     localStorage.removeItem("MediaHub-Token");
     setIsAuthenticatedUserAtom(false)
     setIsUserAtom(null)
-    navigate(`/signin`)
+    navigate(`/`)
   }
 
   return (

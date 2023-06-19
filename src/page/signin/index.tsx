@@ -51,7 +51,7 @@ const SigninForm: React.FC = () => {
         formik.resetForm();
         queryClient.invalidateQueries("user");
         // connexion réussie
-        navigate("/");
+        navigate("/home");
       } catch (error: any) {
         console.log('error',error)
         // connexion n'a pas réussie
